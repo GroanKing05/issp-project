@@ -13,7 +13,7 @@ mu_sdaf = 0.01;       % Step size for SDAF - adjust as needed
 mu_lms = 0.01;        % Step size for LMS - adjust as needed
 lambda_rls = 0.99;    % Forgetting factor for RLS (typically 0.95 to 0.99)
 delta_rls = 100;      % Regularization parameter for RLS
-max_iterations = 1e6; % Maximum iterations
+max_iterations = 3e3; % Maximum iterations
 
 %% SDAF Implementation
 % Apply SDAF to Signal1 using Noise1 as reference
