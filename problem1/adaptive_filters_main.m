@@ -279,7 +279,3 @@ fprintf('\nSignal 2 Final MSE Values:\n');
 fprintf('SDAF: %.6f\n', final_mse2_sdaf);
 fprintf('LMS: %.6f\n', final_mse2_lms);
 fprintf('RLS: %.6f\n', final_mse2_rls);
-
-fprintf('\nSDAF Additional Statistics:\n');
-fprintf('Signal 1 - Iterations to converge: %d\n', iterations_to_converge1_sdaf);
-fprintf('Signal 2 - Iterations to converge: %d\n', iterations_to_converge2_sdaf);

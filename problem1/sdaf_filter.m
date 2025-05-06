@@ -10,7 +10,7 @@ function [filtered_signal, mse_history, w_history] = sdaf_filter(corrupted_signa
     %
     % Outputs:
     %   filtered_signal  - The filtered ECG signal
-    %   mse_history      - History of mean square error
+    %   mse_history      - History of mean square error (moving average)
     %   w_history        - History of filter weights
     
     % Input validation
@@ -46,6 +46,12 @@ function [filtered_signal, mse_history, w_history] = sdaf_filter(corrupted_signa
         X(i:end, i) = noise_ref(1:end-i+1);
     end
     
+    % Set window size for moving average MSE calculation
+    window_size = 50;  % Adjust as needed
+    
+    % Initialize buffer for squared error values
+    error_buffer = zeros(window_size, 1);
+    
     % Main steepest descent algorithm
     for iter = 1:max_iterations
         % Estimate noise using current filter weights
@@ -57,20 +63,26 @@ function [filtered_signal, mse_history, w_history] = sdaf_filter(corrupted_signa
         % Calculate error (we assume this is close to the original signal)
         error = filtered_signal;
         
-        % Compute mean square error
-        mse = mean(error.^2);
-        mse_history(iter) = mse;
+        % Calculate squared error for each sample
+        squared_errors = error.^2;
+        
+        % Compute instantaneous MSE (mean of all samples)
+        instant_mse = mean(squared_errors);
+        
+        % Update the error buffer for moving average (shift values and add newest)
+        error_buffer = [instant_mse; error_buffer(1:end-1)];
+        
+        % Calculate MSE as moving average
+        if iter < window_size
+            % For initial iterations before window is filled
+            mse_history(iter) = mean(error_buffer(1:iter));
+        else
+            % Full window moving average
+            mse_history(iter) = mean(error_buffer);
+        end
         
         % Store current weights
         w_history(:, iter) = w;
-        
-        % Check for convergence (optional)
-        if iter > 1 && abs(mse_history(iter) - mse_history(iter-1)) < 1e-8
-            % Truncate outputs to actual iterations
-            mse_history = mse_history(1:iter);
-            w_history = w_history(:, 1:iter);
-            break;
-        end
         
         % Update weights using steepest descent
         gradient = -2 * (X' * error) / signal_length;
@@ -81,4 +93,4 @@ function [filtered_signal, mse_history, w_history] = sdaf_filter(corrupted_signa
     estimated_noise = X * w;
     filtered_signal = corrupted_signal - estimated_noise;
     
-    end
+end

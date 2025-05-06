@@ -25,20 +25,20 @@ function [filtered_signal, mse_history, w_history] = rls_filter(primary_signal, 
     % Initialize output arrays
     signal_length = length(primary_signal);
     filtered_signal = zeros(signal_length, 1);
-    mse_history = zeros(max_iterations, 1);
-    w_history = zeros(filter_order + 1, max_iterations);
+    mse_history = zeros(min(max_iterations, signal_length), 1);
+    w_history = zeros(filter_order + 1, min(max_iterations, signal_length));
+    
+    % Initialize error sum for MSE calculation
+    error_sum = 0;
     
     % Process the signal
-    for n = 1:max_iterations
-        % For iterations beyond signal length, wrap around to continue adapting
-        signal_index = mod(n-1, signal_length) + 1;
-        
+    for n = 1:min(max_iterations, signal_length)
         % Get current input vector (reference signal)
-        if signal_index <= filter_order
+        if n <= filter_order
             % Pad with zeros for the initial samples
-            x = [reference_signal(1:signal_index); zeros(filter_order + 1 - signal_index, 1)];
+            x = [reference_signal(1:n); zeros(filter_order + 1 - n, 1)];
         else
-            x = reference_signal(signal_index:-1:signal_index-filter_order);
+            x = reference_signal(n:-1:n-filter_order);
         end
         
         % 1. Compute the gain vector
@@ -46,36 +46,38 @@ function [filtered_signal, mse_history, w_history] = rls_filter(primary_signal, 
         g = z / (lambda + x' * z); % g(n) = z(n) / (λ + x'(n)z(n))
         
         % 2. Compute the a priori error
-        y = w' * x; % filter output
-        alpha = primary_signal(signal_index) - y; % a priori error: α(n) = d(n) - w'(n-1)x(n)
+        y_hat = w' * x; % filter output
+        e = primary_signal(n) - y_hat; % a priori error: α(n) = d(n) - w'(n-1)x(n)
         
         % 3. Update the filter coefficients
-        w = w + alpha * g; % w(n) = w(n-1) + α(n)g(n)
+        w = w + e * g; % w(n) = w(n-1) + α(n)g(n)
         
         % 4. Update the inverse correlation matrix
         P = (1/lambda) * (P - g * x' * P); % P(n) = (1/λ)[P(n-1) - g(n)z'(n)]
         
-        % Store results
-        if n <= signal_length
-            filtered_signal(signal_index) = primary_signal(signal_index) - y;  % The cleaned signal
-        end
+        % Store the error signal (which is our cleaned signal)
+        filtered_signal(n) = e;
         
-        mse_history(n) = alpha^2; % Store the squared error
-        w_history(:, n) = w; % Store the filter weights
+        % Update cumulative error sum and calculate MSE
+        error_sum = error_sum + e^2;
+        mse_history(n) = error_sum / n;  % Time-averaged MSE
+        
+        % Store filter weights
+        w_history(:, n) = w;
     end
     
-    % Apply the final filter to any remaining signal samples if we stopped early
+    % If we haven't processed the entire signal, use the final weights to process the rest
     if max_iterations < signal_length
-        for n = max_iterations+1:signal_length
+        for n = (max_iterations+1):signal_length
             if n <= filter_order
                 x = [reference_signal(1:n); zeros(filter_order + 1 - n, 1)];
             else
                 x = reference_signal(n:-1:n-filter_order);
             end
             
-            y = w' * x;
-            filtered_signal(n) = primary_signal(n) - y;
+            y_hat = w' * x;
+            e = primary_signal(n) - y_hat;
+            filtered_signal(n) = e;
         end
     end
-    
     end

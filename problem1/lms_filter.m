@@ -24,6 +24,9 @@ function [filtered_signal, mse_history, w_history] = lms_filter(primary_signal, 
     mse_history = zeros(min(max_iterations, signal_length), 1);
     w_history = zeros(filter_order + 1, min(max_iterations, signal_length));
     
+    % Initialize error sum for MSE calculation
+    error_sum = 0;
+    
     % Process the signal
     for n = 1:min(max_iterations, signal_length)
         % Get current input vector (reference signal)
@@ -46,8 +49,11 @@ function [filtered_signal, mse_history, w_history] = lms_filter(primary_signal, 
         % Update filter coefficients using LMS algorithm
         w = w + mu * e * x;
         
-        % Store results
-        mse_history(n) = e^2;
+        % Update cumulative error sum and calculate MSE
+        error_sum = error_sum + e^2;
+        mse_history(n) = error_sum / n;  % Time-averaged MSE
+        
+        % Store filter weights
         w_history(:, n) = w;
     end
     
