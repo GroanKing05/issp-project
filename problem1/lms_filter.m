@@ -57,18 +57,18 @@ function [filtered_signal, mse_history, w_history] = lms_filter(primary_signal, 
         w_history(:, n) = w;
     end
     
-    % If we haven't processed the entire signal, use the final weights to process the rest
-    if max_iterations < signal_length
-        for n = (max_iterations+1):signal_length
-            if n <= filter_order
-                x = [reference_signal(1:n); zeros(filter_order + 1 - n, 1)];
-            else
-                x = reference_signal(n:-1:n-filter_order);
-            end
+    % % If we haven't processed the entire signal, use the final weights to process the rest
+    % if max_iterations < signal_length
+    %     for n = (max_iterations+1):signal_length
+    %         if n <= filter_order
+    %             x = [reference_signal(1:n); zeros(filter_order + 1 - n, 1)];
+    %         else
+    %             x = reference_signal(n:-1:n-filter_order);
+    %         end
             
-            y_hat = w' * x;
-            e = primary_signal(n) - y_hat;
-            filtered_signal(n) = e;
-        end
-    end
-    end
+    %         y_hat = w' * x;
+    %         e = primary_signal(n) - y_hat;
+    %         filtered_signal(n) = e;
+    %     end
+    % end
+    % end

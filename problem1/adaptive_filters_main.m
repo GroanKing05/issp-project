@@ -11,8 +11,8 @@ load('Noise2.mat');   % Contains w2
 p = 4;                % Filter order as specified in the problem
 mu_sdaf = 0.01;       % Step size for SDAF - adjust as needed
 mu_lms = 0.01;        % Step size for LMS - adjust as needed
-lambda_rls = 0.99;    % Forgetting factor for RLS (typically 0.95 to 0.99)
-delta_rls = 100;      % Regularization parameter for RLS
+lambda_rls = 0.997;    % Forgetting factor for RLS (typically 0.95 to 0.99)
+delta_rls = 0.01;      % Regularization parameter for RLS
 max_iterations = 3e3; % Maximum iterations
 
 %% SDAF Implementation
