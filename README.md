@@ -6,22 +6,11 @@ This repository contains the project files and report for the **Introduction to 
 
 ### 1. ECG Signal Filtering using Adaptive Filters
 
-This project focuses on filtering a noisy ECG signal using various adaptive filters in both stationary and non-stationary conditions:
-
-- **Recursive Least Squares (RLS)**
-- **Least Mean Squares (LMS)**
-- **Steepest Descent Algorithm**
-
-The goal is to analyze the performance of each filter in denoising the ECG signal under different statistical conditions.
+This project focuses on filtering a noisy ECG signal using various adaptive filters like the **Recursive Least Squares (RLS)**, **Least Mean Squares (LMS)**, **Steepest Descent Algorithm** in both stationary and non-stationary conditions. The goal was to analyze the performance of each filter in denoising the ECG signal under different statistical conditions.
 
 ### 2. Kalman Filter for Motion Tracking
 
-The second problem involves applying the **Kalman filter** for tracking the motion of a vehicle from a fixed, stationary reference point. The Kalman filter is used for:
-
-- **State Prediction**
-- **Measurement Update**
-
-This helps estimate the trajectory of the vehicle in the presence of noise and uncertainty.
+The second problem involves applying the **Kalman filter** for tracking the motion of a vehicle from a fixed, stationary reference point. The Kalman filter is used for state prediction and update using measurements. This helps estimate the trajectory of the vehicle in the presence of noise and uncertainty.
 
 ## Contents
 
