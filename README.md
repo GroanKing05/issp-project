@@ -25,6 +25,6 @@ This helps estimate the trajectory of the vehicle in the presence of noise and u
 
 ## Contents
 
-- `project files/problem1` – Code and results for adaptive filtering of ECG signals
-- `project files/problem2` – Code and results for Kalman filter-based motion estimation
-- `2023112005_ISSP_ProjectReport.pdf` – Final project report
+- `project files/problem1` – Code for adaptive filtering of ECG signals
+- `project files/problem2` – Code for Kalman filter-based motion estimation
+- `2023112005_ISSP_ProjectReport.pdf` – Final project report explaining the results.
